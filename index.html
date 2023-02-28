@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Images</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function(e) {
+                e.preventDefault();
+                var keyword = $('#keyword').val();
+                var search_url = "{insert CORS proxy HERE!!!}https://duckduckgo.com/?q=" + encodeURIComponent(keyword) + "&iar=images&iax=images&ia=images";
+                $.ajax({
+                    url: search_url,
+                    dataType: 'text',
+                    success: function(data) {
+                        var vqd = '';
+                        var img_url = '';
+                        if(data) {
+                            var matches = data.match(/vqd='(.*?)'/);
+                            if(matches) {
+                                vqd = matches[1];
+                                var img_search_url = "{insert CORS proxy HERE!!!}https://duckduckgo.com/i.js?l=wt-wt&o=json&q=" + encodeURIComponent(keyword) + "&vqd=" + vqd + "&f=,,,,,&p=1";
+                                $.ajax({
+                                    url: img_search_url,
+                                    dataType: 'json',
+                                    success: function(img_data) {
+                                        if(img_data.results.length > 0) {
+                                            img_url = "{insert CORS proxy HERE!!!}"+img_data.results[0].image;
+                                            $('#image').attr('src', img_url);
+                                            $('#image').attr('alt', keyword);
+											$('#finalurl').text(img_data.results[0].image);
+                                        } else {
+                                            alert("No image found for " + keyword);
+                                        }
+                                    },
+                                    error: function() {
+                                        alert("Error retrieving image data");
+                                    }
+                                });
+                            } else {
+                                alert("Error retrieving vqd hash");
+                            }
+                        } else {
+                            alert("Error retrieving search results");
+                        }
+                    },
+                    error: function() {
+                        alert("Error retrieving search results");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <form>
+        <label for="keyword">Enter keyword:</label>
+        <input type="text" name="keyword" id="keyword">
+        <input type="submit" value="Search">
+    </form>
+	<code id="finalurl"></code>
+    <img width="60%" id="image" src="" alt="">
+</body>
+</html>
