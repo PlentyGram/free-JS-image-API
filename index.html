@@ -17,7 +17,7 @@
                         var vqd = '';
                         var img_url = '';
                         if(data) {
-                            var matches = data.match(/vqd='(.*?)'/);
+                            var matches = data.match(/vqd="(.*?)"/);
                             if(matches) {
                                 vqd = matches[1];
                                 var img_search_url = "{insert CORS proxy HERE!!!}https://duckduckgo.com/i.js?l=wt-wt&o=json&q=" + encodeURIComponent(keyword) + "&vqd=" + vqd + "&f=,,,,,&p=1";
